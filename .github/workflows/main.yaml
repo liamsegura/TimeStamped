@@ -17,15 +17,15 @@ jobs:
           node-version: 14
 
       - name: Install Dependencies
-        run: npm install -g chrome-webstore-upload-cli bestzip
+        run: npm install chrome-webstore-upload-cli bestzip
 
       - name: Zip the extension
-        run: bestzip extension.zip extension/
+        run: npx bestzip extension.zip extension/
 
       - name: Package and Upload Extension
         run: |
-          webstore upload --source=extension.zip --extension-id=$EXTENSION_ID --client-id=$CLIENT_ID --client-secret=$CLIENT_SECRET --refresh-token=$REFRESH_TOKEN
-          webstore publish --extension-id=$EXTENSION_ID --client-id=$CLIENT_ID --client-secret=$CLIENT_SECRET --refresh-token=$REFRESH_TOKEN
+          npx webstore upload --source=extension.zip --extension-id=$EXTENSION_ID --client-id=$CLIENT_ID --client-secret=$CLIENT_SECRET --refresh-token=$REFRESH_TOKEN
+          npx webstore publish --extension-id=$EXTENSION_ID --client-id=$CLIENT_ID --client-secret=$CLIENT_SECRET --refresh-token=$REFRESH_TOKEN
         env:
           EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}

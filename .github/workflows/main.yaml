@@ -22,7 +22,7 @@ jobs:
           npm install -g chrome-webstore-upload-cli bestzip
 
       - name: Zip the extension
-        run: npx bestzip extension.zip extension/
+        run: npx bestzip extension.zip .
 
       - name: Upload and Publish Extension
         run: |

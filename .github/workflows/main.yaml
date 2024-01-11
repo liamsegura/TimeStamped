@@ -24,10 +24,10 @@ jobs:
       - name: Zip the extension
         run: npx bestzip extension.zip extension/
 
-      - name: Package and Upload Extension
+      - name: Upload and Publish Extension
         run: |
-          /usr/local/bin/webstore upload --source=extension.zip --extension-id=$EXTENSION_ID --client-id=$CLIENT_ID --client-secret=$CLIENT_SECRET --refresh-token=$REFRESH_TOKEN
-          /usr/local/bin/webstore publish --extension-id=$EXTENSION_ID --client-id=$CLIENT_ID --client-secret=$CLIENT_SECRET --refresh-token=$REFRESH_TOKEN
+          chrome-webstore-upload upload --source extension.zip --extension-id $EXTENSION_ID --client-id $CLIENT_ID --client-secret $CLIENT_SECRET --refresh-token $REFRESH_TOKEN
+          chrome-webstore-upload publish --extension-id $EXTENSION_ID --client-id $CLIENT_ID --client-secret $CLIENT_SECRET --refresh-token $REFRESH_TOKEN
         env:
           EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}

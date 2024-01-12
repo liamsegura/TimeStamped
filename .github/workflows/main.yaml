@@ -1,4 +1,4 @@
-name: Publish to Chrome Web Store
+name: Publish
 
 on:
   push:
@@ -6,30 +6,26 @@ on:
       - main
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
-          node-version: 18 # Use a version of Node.js that is 18.0 or newer
+          node-version: 16
 
-      - name: Install Dependencies
-        run: |
-          npm install -g chrome-webstore-upload-cli bestzip
+      - name: Install dependencies
+        run: npm install
 
-      - name: Zip the extension
-        run: npx bestzip extension.zip .
+      - name: Build zip file
+        run: npm run build
 
-      - name: Upload and Publish Extension
-        run: |
-          chrome-webstore-upload upload --source extension.zip --extension-id $EXTENSION_ID --client-id $CLIENT_ID --client-secret $CLIENT_SECRET --refresh-token $REFRESH_TOKEN
-          chrome-webstore-upload publish --extension-id $EXTENSION_ID --client-id $CLIENT_ID --client-secret $CLIENT_SECRET --refresh-token $REFRESH_TOKEN
-        env:
-          EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
-          CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+      - name: Upload to Chrome Web Store
+        uses: mobilefirstllc/cws-publish@latest
+        with:
+          action: "upload"
+          extension_id: ${{ secrets.EXTENSION_ID }}
+          client_id: ${{ secrets.CLIENT_ID }}
+          client_secret: ${{ secrets.CLIENT_SECRET }}
+          refresh_token: ${{ secrets.REFRESH_TOKEN }}
+          zip_file: "extension.zip"

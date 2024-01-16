@@ -28,6 +28,17 @@ jobs:
               f.truncate()
           "
 
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Increment version"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Zip the extension
         uses: montudor/action-zip@v0.1.0
         with:
@@ -42,12 +53,3 @@ jobs:
           client_secret: ${{ secrets.CLIENT_SECRET }}
           refresh_token: ${{ secrets.REFRESH_TOKEN }}
           zip_file: extension.zip
-
-      - name: Publish to Chrome Web Store
-        uses: mobilefirstllc/cws-publish@latest
-        with:
-          action: "publish"
-          extension_id: ${{ secrets.EXTENSION_ID }}
-          client_id: ${{ secrets.CLIENT_ID }}
-          client_secret: ${{ secrets.CLIENT_SECRET }}
-          refresh_token: ${{ secrets.REFRESH_TOKEN }}

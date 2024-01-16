@@ -17,10 +17,22 @@ jobs:
       - name: Increment version
         id: version
         run: |
-          VERSION=$(git describe --tags --abbrev=0 | awk -F. '{$NF++; print}' OFS='.')
+          if git describe --tags --abbrev=0 > /dev/null 2>&1; then
+            VERSION=$(git describe --tags --abbrev=0 | awk -F. '{$NF++; print}' OFS='.')
+          else
+            VERSION="1.2.7"
+          fi
           git tag $VERSION
           echo "::set-output name=version::$VERSION"
-
+          python -c "
+          import json
+          with open('extension/manifest.json', 'r+') as f:
+              data = json.load(f)
+              data['version'] = '$VERSION'
+              f.seek(0)
+              json.dump(data, f, indent=2)
+              f.truncate()
+          "
       - name: Zip the extension
         uses: montudor/action-zip@v0.1.0
         with:

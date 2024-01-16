@@ -10,6 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Increment version
+        id: version
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 | awk -F. '{$NF++; print}' OFS='.')
+          git tag $VERSION
+          echo "::set-output name=version::$VERSION"
 
       - name: Zip the extension
         uses: montudor/action-zip@v0.1.0
@@ -25,3 +35,7 @@ jobs:
           client_secret: ${{ secrets.CLIENT_SECRET }}
           refresh_token: ${{ secrets.REFRESH_TOKEN }}
           zip_file: extension.zip
+
+      - name: Push tag
+        run: |
+          git push origin ${{ steps.version.outputs.version }}

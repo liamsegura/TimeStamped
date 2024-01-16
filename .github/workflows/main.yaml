@@ -10,34 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Increment version
-        run: |
-          python -c "
-          import json
-          with open('extension/manifest.json', 'r+') as f:
-              data = json.load(f)
-              version = data['version'].split('.')
-              version[-1] = str(int(version[-1]) + 1)
-              data['version'] = '.'.join(version)
-              f.seek(0)
-              json.dump(data, f, indent=2)
-              f.truncate()
-          "
-
-      - name: Commit changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -am "Increment version"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Zip the extension
         uses: montudor/action-zip@v0.1.0
